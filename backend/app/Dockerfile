@@ -53,4 +53,4 @@ COPY . .
 EXPOSE 5000
 
 # CMD que mantém o Flask rodando
-CMD ["python", "manage.py", "run", "--host=0.0.0.0"]
+CMD ["python", "manage.py", "run"]

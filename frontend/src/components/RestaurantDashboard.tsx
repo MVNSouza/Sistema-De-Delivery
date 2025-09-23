@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, CheckCircle, Truck, X, Eye } from 'lucide-react';
 import { Order } from '../types';
-import { mockOrders, mockRestaurants } from '../data/mockData';
+import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -64,34 +64,18 @@ export function RestaurantDashboard({ onBack }: RestaurantDashboardProps) {
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simulate occasional error for demo
-      if (Math.random() < 0.1) {
-        throw new Error('Falha ao carregar pedidos');
-      }
-
-      // Get restaurant ID based on user
-      // For demo purposes, we'll map users to restaurants
-      const userToRestaurant: Record<string, string> = {
-        '3': '1', // burger@example.com -> Burger Palace
-        '4': '2', // pizza@example.com -> Pizzaria Bella Vista
-      };
-
-      const restaurantId = userToRestaurant[user?.id || ''];
-      
-      if (!restaurantId) {
+      if (!user?.restaurantId) {
         setOrders([]);
         return;
       }
 
-      // Filter orders for current restaurant
-      const restaurantOrders = mockOrders.filter(order => order.restaurantId === restaurantId);
-      // Sort by creation date (newest first)
-      restaurantOrders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      const response = await apiService.getRestaurantOrders(user.restaurantId);
       
-      setOrders(restaurantOrders);
+      if (response.success) {
+        setOrders(response.data);
+      } else {
+        throw new Error(response.message || 'Falha ao carregar pedidos');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {
@@ -99,14 +83,28 @@ export function RestaurantDashboard({ onBack }: RestaurantDashboardProps) {
     }
   };
 
-  const updateOrderStatus = (orderId: string, newStatus: Order['status']) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.id === orderId
-          ? { ...order, status: newStatus }
-          : order
-      )
-    );
+  const updateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
+    try {
+      await apiService.updateOrderStatus(orderId, newStatus);
+      
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderId
+            ? { ...order, status: newStatus }
+            : order
+        )
+      );
+    } catch (err) {
+      console.error('Erro ao atualizar status:', err);
+      // For demo purposes, still update locally
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderId
+            ? { ...order, status: newStatus }
+            : order
+        )
+      );
+    }
   };
 
   const formatDate = (date: Date) => {
@@ -120,8 +118,8 @@ export function RestaurantDashboard({ onBack }: RestaurantDashboardProps) {
   };
 
   const getRestaurantName = (restaurantId: string) => {
-    const restaurant = mockRestaurants.find(r => r.id === restaurantId);
-    return restaurant?.name || 'Restaurante';
+    // This would come from the API response now
+    return 'Restaurante';
   };
 
   if (isLoading) {

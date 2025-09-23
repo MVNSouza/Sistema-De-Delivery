@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, CheckCircle, Truck, X } from 'lucide-react';
 import { Order } from '../types';
-import { mockOrders } from '../data/mockData';
+import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -56,20 +56,18 @@ export function CustomerOrders({ onBack }: CustomerOrdersProps) {
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simulate occasional error for demo
-      if (Math.random() < 0.1) {
-        throw new Error('Falha ao carregar pedidos');
+      if (!user?.id) {
+        setOrders([]);
+        return;
       }
 
-      // Filter orders for current user
-      const userOrders = mockOrders.filter(order => order.customerId === user?.id);
-      // Sort by creation date (newest first)
-      userOrders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      const response = await apiService.getCustomerOrders(user.id);
       
-      setOrders(userOrders);
+      if (response.success) {
+        setOrders(response.data);
+      } else {
+        throw new Error(response.message || 'Falha ao carregar pedidos');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {
@@ -185,9 +183,9 @@ export function CustomerOrders({ onBack }: CustomerOrdersProps) {
                       {order.items.map((item, index) => (
                         <div key={index} className="flex justify-between items-center text-sm">
                           <span>
-                            {item.quantity}x {item.menuItem.name}
+                            {item.quantity}x {item.menuItem.nome}
                           </span>
-                          <span>R$ {(item.menuItem.price * item.quantity).toFixed(2)}</span>
+                          <span>R$ {(item.menuItem.preco * item.quantity).toFixed(2)}</span>
                         </div>
                       ))}
                     </div>
@@ -196,14 +194,14 @@ export function CustomerOrders({ onBack }: CustomerOrdersProps) {
                   {/* Address */}
                   <div>
                     <h4 className="font-medium mb-1">Endereço de entrega:</h4>
-                    <p className="text-sm text-muted-foreground">{order.address}</p>
+                    <p className="text-sm text-muted-foreground">{order.endereco}</p>
                   </div>
 
                   {/* Total */}
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Total:</span>
-                      <span className="font-semibold text-lg">R$ {order.total.toFixed(2)}</span>
+                      <span className="font-semibold text-lg">R$ {order.valor_total.toFixed(2)}</span>
                     </div>
                   </div>
 

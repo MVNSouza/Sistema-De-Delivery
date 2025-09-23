@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Minus, Star, MapPin, Clock } from 'lucide-react';
 import { Restaurant, MenuItem } from '../types';
-import { mockMenuItems } from '../data/mockData';
+import { apiService } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -32,16 +32,13 @@ export function RestaurantMenu({ restaurant, onBack }: RestaurantMenuProps) {
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const response = await apiService.getRestaurantProducts(restaurant.id);
       
-      // Simulate occasional error for demo
-      if (Math.random() < 0.1) {
-        throw new Error('Falha ao carregar cardápio');
+      if (response.success) {
+        setMenuItems(response.data);
+      } else {
+        throw new Error(response.message || 'Falha ao carregar cardápio');
       }
-
-      const items = mockMenuItems.filter(item => item.restaurantId === restaurant.id);
-      setMenuItems(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {
@@ -57,10 +54,21 @@ export function RestaurantMenu({ restaurant, onBack }: RestaurantMenuProps) {
     });
   };
 
-  const addToCart = (menuItem: MenuItem) => {
+  const addToCart = async (menuItem: MenuItem) => {
     const quantity = itemQuantities[menuItem.id] || 1;
-    addItem(menuItem, quantity);
-    setItemQuantities(prev => ({ ...prev, [menuItem.id]: 0 }));
+    
+    try {
+      // Send to API
+      await apiService.addToCart(menuItem.id, quantity);
+      // Also add to local cart for UI
+      addItem(menuItem, quantity);
+      setItemQuantities(prev => ({ ...prev, [menuItem.id]: 0 }));
+    } catch (err) {
+      console.error('Erro ao adicionar ao carrinho:', err);
+      // Still add to local cart for now
+      addItem(menuItem, quantity);
+      setItemQuantities(prev => ({ ...prev, [menuItem.id]: 0 }));
+    }
   };
 
   const getCartQuantity = (itemId: string) => {
@@ -135,7 +143,7 @@ export function RestaurantMenu({ restaurant, onBack }: RestaurantMenuProps) {
             <div className="aspect-video rounded-lg overflow-hidden">
               <ImageWithFallback
                 src={restaurant.image}
-                alt={restaurant.name}
+                alt={restaurant.nome}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -143,7 +151,7 @@ export function RestaurantMenu({ restaurant, onBack }: RestaurantMenuProps) {
           
           <div className="md:w-2/3">
             <div className="flex items-start justify-between mb-4">
-              <h1 className="text-3xl font-bold">{restaurant.name}</h1>
+              <h1 className="text-3xl font-bold">{restaurant.nome}</h1>
               <Badge className="bg-green-100 text-green-800">
                 <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
                 {restaurant.rating}
@@ -194,7 +202,7 @@ export function RestaurantMenu({ restaurant, onBack }: RestaurantMenuProps) {
                             <div className="sm:w-48 h-48 sm:h-auto">
                               <ImageWithFallback
                                 src={item.image}
-                                alt={item.name}
+                                alt={item.nome}
                                 className="w-full h-full object-cover"
                               />
                             </div>
@@ -205,13 +213,13 @@ export function RestaurantMenu({ restaurant, onBack }: RestaurantMenuProps) {
                             <div className="flex flex-col h-full">
                               <div className="flex-1">
                                 <div className="flex justify-between items-start mb-2">
-                                  <h3 className="text-lg font-semibold">{item.name}</h3>
+                                  <h3 className="text-lg font-semibold">{item.nome}</h3>
                                   <span className="text-lg font-semibold text-green-600">
-                                    R$ {item.price.toFixed(2)}
+                                    R$ {item.preco.toFixed(2)}
                                   </span>
                                 </div>
                                 <p className="text-muted-foreground mb-4">
-                                  {item.description}
+                                  {item.descricao}
                                 </p>
                               </div>
                               

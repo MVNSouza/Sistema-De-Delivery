@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Star, MapPin, Clock } from 'lucide-react';
 import { Restaurant } from '../types';
-import { mockRestaurants } from '../data/mockData';
+import { apiService } from '../services/api';
 import { Input } from './ui/input';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
@@ -27,7 +27,7 @@ export function Home({ onRestaurantSelect }: HomeProps) {
   useEffect(() => {
     if (searchTerm) {
       const filtered = restaurants.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        restaurant.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
         restaurant.location.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredRestaurants(filtered);
@@ -41,16 +41,14 @@ export function Home({ onRestaurantSelect }: HomeProps) {
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await apiService.getRestaurants();
       
-      // Simulate occasional error for demo
-      if (Math.random() < 0.1) {
-        throw new Error('Falha ao carregar restaurantes');
+      if (response.success) {
+        setRestaurants(response.data);
+        setFilteredRestaurants(response.data);
+      } else {
+        throw new Error(response.message || 'Falha ao carregar restaurantes');
       }
-
-      setRestaurants(mockRestaurants);
-      setFilteredRestaurants(mockRestaurants);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {
@@ -147,7 +145,7 @@ export function Home({ onRestaurantSelect }: HomeProps) {
               </div>
 
               <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2">{restaurant.name}</h3>
+                <h3 className="font-semibold text-lg mb-2">{restaurant.nome}</h3>
                 <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
                   {restaurant.description}
                 </p>

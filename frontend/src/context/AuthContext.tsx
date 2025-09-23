@@ -1,24 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
+import { apiService } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role: 'customer' | 'restaurant') => Promise<void>;
+  login: (email: string, senha: string) => Promise<void>;
+  register: (nome: string, email: string, senha: string, tipo: 'customer' | 'restaurant') => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   error: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Mock users data
-const mockUsers: User[] = [
-  { id: '1', name: 'João Silva', email: 'joao@example.com', role: 'customer' },
-  { id: '2', name: 'Maria Santos', email: 'maria@example.com', role: 'customer' },
-  { id: '3', name: 'Restaurante Burger King', email: 'burger@example.com', role: 'restaurant' },
-  { id: '4', name: 'Pizzaria Bella', email: 'pizza@example.com', role: 'restaurant' },
-];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -27,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check for stored token on mount
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('user');
     
     if (token && storedUser) {
@@ -37,24 +30,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, senha: string) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await apiService.login(email, senha);
       
-      const foundUser = mockUsers.find(u => u.email === email);
-      
-      if (!foundUser || password !== 'password') {
-        throw new Error('Email ou senha incorretos');
+      if (response.success) {
+        const { user, token } = response.data;
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
+      } else {
+        throw new Error(response.message || 'Erro ao fazer login');
       }
-
-      const token = 'mock-jwt-token';
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(foundUser));
-      setUser(foundUser);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login');
       throw err;
@@ -63,32 +53,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (name: string, email: string, password: string, role: 'customer' | 'restaurant') => {
+  const register = async (nome: string, email: string, senha: string, tipo: 'customer' | 'restaurant') => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await apiService.register(nome, email, senha, tipo);
       
-      // Check if user already exists
-      if (mockUsers.find(u => u.email === email)) {
-        throw new Error('Email já está em uso');
+      if (response.success) {
+        const { user, token } = response.data;
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
+      } else {
+        throw new Error(response.message || 'Erro ao criar conta');
       }
-
-      const newUser: User = {
-        id: Date.now().toString(),
-        name,
-        email,
-        role
-      };
-
-      mockUsers.push(newUser);
-      
-      const token = 'mock-jwt-token';
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(newUser));
-      setUser(newUser);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao criar conta');
       throw err;
@@ -98,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     setUser(null);
     setError(null);

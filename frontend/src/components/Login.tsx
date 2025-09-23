@@ -11,19 +11,19 @@ import { Alert, AlertDescription } from './ui/alert';
 import { LoadingSpinner } from './LoadingSpinner';
 
 interface FormData {
-  name: string;
+  nome: string;
   email: string;
-  password: string;
+  senha: string;
   confirmPassword: string;
-  role: 'customer' | 'restaurant';
+  tipo: 'customer' | 'restaurant';
 }
 
 interface FormErrors {
-  name?: string;
+  nome?: string;
   email?: string;
-  password?: string;
+  senha?: string;
   confirmPassword?: string;
-  role?: string;
+  tipo?: string;
 }
 
 export function Login() {
@@ -31,11 +31,11 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    name: '',
+    nome: '',
     email: '',
-    password: '',
+    senha: '',
     confirmPassword: '',
-    role: 'customer'
+    tipo: 'customer'
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
@@ -44,8 +44,8 @@ export function Login() {
     return re.test(email);
   };
 
-  const validatePassword = (password: string) => {
-    return password.length >= 6;
+  const validatePassword = (senha: string) => {
+    return senha.length >= 6;
   };
 
   const validateForm = (isLogin: boolean = false) => {
@@ -57,25 +57,25 @@ export function Login() {
       errors.email = 'Email inválido';
     }
 
-    if (!formData.password) {
-      errors.password = 'Senha é obrigatória';
-    } else if (!validatePassword(formData.password)) {
-      errors.password = 'Senha deve ter pelo menos 6 caracteres';
+    if (!formData.senha) {
+      errors.senha = 'Senha é obrigatória';
+    } else if (!validatePassword(formData.senha)) {
+      errors.senha = 'Senha deve ter pelo menos 6 caracteres';
     }
 
     if (!isLogin) {
-      if (!formData.name) {
-        errors.name = 'Nome é obrigatório';
+      if (!formData.nome) {
+        errors.nome = 'Nome é obrigatório';
       }
 
       if (!formData.confirmPassword) {
         errors.confirmPassword = 'Confirmação de senha é obrigatória';
-      } else if (formData.password !== formData.confirmPassword) {
+      } else if (formData.senha !== formData.confirmPassword) {
         errors.confirmPassword = 'Senhas não coincidem';
       }
 
-      if (!formData.role) {
-        errors.role = 'Tipo de usuário é obrigatório';
+      if (!formData.tipo) {
+        errors.tipo = 'Tipo de usuário é obrigatório';
       }
     }
 
@@ -89,7 +89,7 @@ export function Login() {
     if (!validateForm(true)) return;
 
     try {
-      await login(formData.email, formData.password);
+      await login(formData.email, formData.senha);
     } catch (err) {
       // Error is handled by AuthContext
     }
@@ -101,7 +101,7 @@ export function Login() {
     if (!validateForm()) return;
 
     try {
-      await register(formData.name, formData.email, formData.password, formData.role);
+      await register(formData.nome, formData.email, formData.senha, formData.tipo);
     } catch (err) {
       // Error is handled by AuthContext
     }
@@ -168,9 +168,9 @@ export function Login() {
                       id="login-password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Sua senha"
-                      value={formData.password}
-                      onChange={(e) => handleInputChange('password', e.target.value)}
-                      className={formErrors.password ? 'border-destructive' : ''}
+                      value={formData.senha}
+                      onChange={(e) => handleInputChange('senha', e.target.value)}
+                      className={formErrors.senha ? 'border-destructive' : ''}
                     />
                     <Button
                       type="button"
@@ -182,8 +182,8 @@ export function Login() {
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
-                  {formErrors.password && (
-                    <p className="text-sm text-destructive mt-1">{formErrors.password}</p>
+                  {formErrors.senha && (
+                    <p className="text-sm text-destructive mt-1">{formErrors.senha}</p>
                   )}
                 </div>
 
@@ -211,12 +211,12 @@ export function Login() {
                     id="register-name"
                     type="text"
                     placeholder="Seu nome completo"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    className={formErrors.name ? 'border-destructive' : ''}
+                    value={formData.nome}
+                    onChange={(e) => handleInputChange('nome', e.target.value)}
+                    className={formErrors.nome ? 'border-destructive' : ''}
                   />
-                  {formErrors.name && (
-                    <p className="text-sm text-destructive mt-1">{formErrors.name}</p>
+                  {formErrors.nome && (
+                    <p className="text-sm text-destructive mt-1">{formErrors.nome}</p>
                   )}
                 </div>
 
@@ -238,10 +238,10 @@ export function Login() {
                 <div>
                   <Label htmlFor="register-role">Tipo de usuário</Label>
                   <Select
-                    value={formData.role}
-                    onValueChange={(value: 'customer' | 'restaurant') => handleInputChange('role', value)}
+                    value={formData.tipo}
+                    onValueChange={(value: 'customer' | 'restaurant') => handleInputChange('tipo', value)}
                   >
-                    <SelectTrigger className={formErrors.role ? 'border-destructive' : ''}>
+                    <SelectTrigger className={formErrors.tipo ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                     <SelectContent>
@@ -249,8 +249,8 @@ export function Login() {
                       <SelectItem value="restaurant">Restaurante</SelectItem>
                     </SelectContent>
                   </Select>
-                  {formErrors.role && (
-                    <p className="text-sm text-destructive mt-1">{formErrors.role}</p>
+                  {formErrors.tipo && (
+                    <p className="text-sm text-destructive mt-1">{formErrors.tipo}</p>
                   )}
                 </div>
 
@@ -261,9 +261,9 @@ export function Login() {
                       id="register-password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Crie uma senha"
-                      value={formData.password}
-                      onChange={(e) => handleInputChange('password', e.target.value)}
-                      className={formErrors.password ? 'border-destructive' : ''}
+                      value={formData.senha}
+                      onChange={(e) => handleInputChange('senha', e.target.value)}
+                      className={formErrors.senha ? 'border-destructive' : ''}
                     />
                     <Button
                       type="button"
@@ -275,8 +275,8 @@ export function Login() {
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                   </div>
-                  {formErrors.password && (
-                    <p className="text-sm text-destructive mt-1">{formErrors.password}</p>
+                  {formErrors.senha && (
+                    <p className="text-sm text-destructive mt-1">{formErrors.senha}</p>
                   )}
                 </div>
 
