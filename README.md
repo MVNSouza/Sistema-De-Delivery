@@ -1,27 +1,92 @@
-# Sistema-De-Delivery
+# 🍔 Sistema de Delivery
 
-## Projeto acadêmico feito com React, Flask e Postgres
+Este projeto é um sistema de delivery composto por **backend (Django)** e **frontend (React com Vite)**.  
+A ideia é manter os dois no mesmo repositório (**monorepo**), mas cada um roda separadamente.
 
+---
 
-A partir da raiz do seu projeto, execute a seguinte sequência de comandos:
+## 📂 Estrutura do Projeto
+```
+SISTEMA-DE-DELIVERY/
+│── api/              # Backend (Django + Docker)
+│   ├── app/
+│   ├── core/
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── docker-compose.yml
+│
+│── app/              # Frontend (React + Vite)
+│   ├── public/
+│   └── src/
+│       ├── assets/
+│       ├── App.jsx
+│       ├── main.jsx
+│       └── ...
+│
+│── .gitignore
+│── README.md
+```
+---
 
-Inicie os contêineres: Este comando constrói e inicia o seu projeto e o banco de dados.
+## 🚀 Como Rodar o Projeto
 
-Bash
-    docker-compose up --build
+### 🔹 1. Clonar o repositório
+`git clone https://github.com/seu-usuario/sistema-de-delivery.git`
+`cd sistema-de-delivery`
 
-Abra um novo terminal e rode os comandos de migração (o servidor já está rodando no terminal anterior).
+---
 
-Bash
-### Executa a migração para criar as tabelas do Django
-    docker-compose exec web python manage.py migrate
+### 🔹 2. Rodar o **Backend (API)**
+O backend está em Django e roda via **Docker Compose**.
 
-### Opcional: Crie um superusuário para acessar o admin
-abra um novo terminal e execute este comando: 
-    docker-compose exec web python manage.py createsuperuser
-Pronto! Seu projeto está rodando em http://localhost:8000/. Você pode acessar o painel de administração em http://localhost:8000/admin/.
+1. Acesse a pasta do backend:
+   `cd api`
 
-### Para Desligar
-Para parar todos os serviços (contêineres) definidos no seu docker-compose.yml e remover os contêineres, execute:
-Bash
-    docker-compose down
+2. Suba os containers:
+   `docker-compose up --build`
+
+3. A API estará disponível em:
+   `http://localhost:8000`
+
+---
+
+### 🔹 3. Rodar o **Frontend (App)**
+O frontend está em **React com Vite**.
+
+1. Acesse a pasta do frontend:
+   `cd app`
+
+2. Instale as dependências:
+   `npm install`
+
+3. Rode o servidor de desenvolvimento:
+   `npm run dev`
+
+4. O frontend estará disponível em:
+   `http://localhost:5173`
+
+---
+
+## ⚡ Comunicação Frontend ↔ Backend
+
+- O **frontend (React)** faz requisições para o **backend (Django)**.  
+- Configure a URL base da API no frontend, geralmente algo como:
+
+`const API_URL = "http://localhost:8000"`;
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Backend:** Django, Django REST Framework, Docker, Docker Compose  
+- **Frontend:** React, Vite, JavaScript (ES6+)  
+- **Banco de Dados:** (SQLite ou outro configurado no docker-compose.yml)  
+
+---
+
+## 👨‍💻 Autores
+<img align="right" src="https://github-readme-stats.vercel.app/api?username=MVNSouza&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=MVNSouza">
+<img align="right" src="https://github-readme-stats.vercel.app/api?username=Mateus-RF&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=Mateus-RF">
+<img align="right" src="https://github-readme-stats.vercel.app/api?username=lupercioneto&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=lupercioneto">
+<img align="right" src="https://github-readme-stats.vercel.app/api?username=digg0&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=digg0">

@@ -1,0 +1,81 @@
+# ============================================
+# FRONTEND (React / Node.js)
+# ============================================
+node_modules/
+build/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+
+# ============================================
+# BACKEND (Python)
+# ============================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.log
+*.pot
+*.pyc
+db.sqlite3
+instance/
+.env
+.venv/
+venv/
+ENV/
+env/
+*.db
+*.sqlite3
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ============================================
+# DATABASE (PostgreSQL)
+# ============================================
+*.sql
+*.dump
+*.backup
+
+# ============================================
+# OS / IDE
+# ============================================
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains (PyCharm/WebStorm/IntelliJ)
+.idea/
+*.iml
+
+# ============================================
+# MISC
+# ============================================
+# Logs
+*.log
+logs/
+*.out
+*.pid
+
+# Local configs
+*.local
