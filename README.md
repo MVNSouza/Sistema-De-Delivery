@@ -1,14 +1,14 @@
 # 🍔 Sistema de Delivery
 
-Este projeto é um sistema de delivery composto por **backend (Django)** e **frontend (React com Vite)**.  
-A ideia é manter os dois no mesmo repositório (**monorepo**), mas cada um roda separadamente.
+Este projeto é um sistema de delivery composto por backend (Django) e frontend (React com Vite).
+A ideia é manter os dois no mesmo repositório (monorepo), mas cada um roda separadamente.
 
 ---
 
 ## 📂 Estrutura do Projeto
 ```
 SISTEMA-DE-DELIVERY/
-│── api/              # Backend (Django + Docker)
+│── backend/          # Backend (Django + Docker)
 │   ├── app/
 │   ├── core/
 │   ├── manage.py
@@ -16,16 +16,16 @@ SISTEMA-DE-DELIVERY/
 │   ├── Dockerfile
 │   └── docker-compose.yml
 │
-│── app/              # Frontend (React + Vite)
-│   ├── public/
-│   └── src/
-│       ├── assets/
-│       ├── App.jsx
-│       ├── main.jsx
-│       └── ...
+│── frontend/         # Frontend (React + Vite)
+│   ├── src/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── ...
 │
 │── .gitignore
 │── README.md
+
 ```
 ---
 
@@ -37,34 +37,35 @@ SISTEMA-DE-DELIVERY/
 
 ---
 
-### 🔹 2. Rodar o **Backend (API)**
-O backend está em Django e roda via **Docker Compose**.
+##🔹 2. Rodar o Backend (API)
 
-1. Acesse a pasta do backend:
-   `cd api`
+O backend está em Django e roda via Docker Compose.
 
-2. Suba os containers:
-   `docker-compose up --build`
+Acesse a pasta do backend:
+`cd backend`
 
-3. A API estará disponível em:
-   `http://localhost:8000`
+Suba os containers:
+`docker-compose up --build`
+
+A API estará disponível em:
+`http://localhost:8000`
 
 ---
 
-### 🔹 3. Rodar o **Frontend (App)**
-O frontend está em **React com Vite**.
+##🔹 3. Rodar o Frontend (App)
 
-1. Acesse a pasta do frontend:
-   `cd app`
+O frontend está em React com Vite.
+Acesse a pasta do frontend:
+``cd frontend``
 
-2. Instale as dependências:
-   `npm install`
+Instale as dependências:
+``npm install``
 
-3. Rode o servidor de desenvolvimento:
-   `npm run dev`
+Rode o servidor de desenvolvimento:
+`npm run dev`
 
-4. O frontend estará disponível em:
-   `http://localhost:5173`
+O frontend estará disponível em:
+`http://localhost:3000`
 
 ---
 
@@ -79,9 +80,9 @@ O frontend está em **React com Vite**.
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Backend:** Django, Django REST Framework, Docker, Docker Compose  
-- **Frontend:** React, Vite, JavaScript (ES6+)  
-- **Banco de Dados:** (SQLite ou outro configurado no docker-compose.yml)  
+- **Backend:**  ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white) 
+- **Frontend:** ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) 	![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)  
+- **Banco de Dados:** ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
 ---
 
