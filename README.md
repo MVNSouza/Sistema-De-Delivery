@@ -86,9 +86,5 @@ O frontend está em **React com Vite**.
 ---
 
 ## 👨‍💻 Autores
-<div>
-<img align="right" src="https://github-readme-stats.vercel.app/api?username=MVNSouza&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=MVNSouza">
-<img align="right" src="https://github-readme-stats.vercel.app/api?username=Mateus-RF&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=Mateus-RF">
-<img align="right" src="https://github-readme-stats.vercel.app/api?username=lupercioneto&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=lupercioneto">
-<img align="right" src="https://github-readme-stats.vercel.app/api?username=digg0&show_icons=true&theme=dracula&hide_border=true&locale=pt-BR&custom_title=digg0">
-</div>
+
+
